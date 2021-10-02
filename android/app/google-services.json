@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "220791999322",
+    "project_id": "viz-me",
+    "storage_bucket": "viz-me.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:220791999322:android:e424915851fda7c00fc163",
+        "android_client_info": {
+          "package_name": "com.example.viz_me"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "220791999322-6kc823c7pd9qnovs8u5e53jec782vh97.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfcSlJi5r4VJxzUiMdPzPIyDiYH0O85b8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "220791999322-6kc823c7pd9qnovs8u5e53jec782vh97.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "220791999322-8v6jevng2k8ob0maf9mp8nj06cdkmag5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.vizMe"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

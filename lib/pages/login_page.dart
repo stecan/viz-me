@@ -1,7 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:viz_me/pages/regist_page.dart';
-import 'package:viz_me/pages/reset_password.dart';
+import 'package:viz_me/pages/reset_password_page.dart';
+import 'package:viz_me/pages/send_verifiy_mail_page.dart';
+
+import 'dummy_page.dart';
 
 class Login extends StatefulWidget {
   Login({Key? key, required this.title}) : super(key: key);
@@ -15,10 +19,47 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   int _counter = 100;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  // メッセージ表示用
+  String infoText = '';
+  // 入力メールアドレス
+  String email = '';
+  // 入力パスワード
+  String password = '';
+
+  // メール/パスワードでログイン試行
+  void _roginExec() async{
+    try {
+      final FirebaseAuth _auth = FirebaseAuth.instance;
+
+      await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      // ログインに成功した場合
+      // トップ画面に遷移＋ログイン画面を破棄
+      final _isVerified = await _auth.currentUser!.emailVerified;
+      if (_isVerified) {
+        await _auth.currentUser!.sendEmailVerification();
+
+        await Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) {
+            return Dummy(title: '',);
+          }),
+        );
+      } else{
+        await Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) {
+            return SendVerifyMail(title: '未認証',from: 1,);
+          }),
+        );
+      }
+    } catch (e) {
+      // ログインに失敗した場合
+      setState(() {
+        infoText = "ログインに失敗しました：${e.toString()}";
+      });
+    }
+
   }
 
   @override
@@ -31,22 +72,28 @@ class _LoginState extends State<Login> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-          TextField(
-          obscureText:false,
-          decoration: const InputDecoration(
-            hintText: 'Type your email address',
-            labelText: 'email address',
-          ),
-        ),
-        TextField(
-          obscureText:true,
-          decoration: const InputDecoration(
-            hintText: 'Type your password',
-            labelText: 'password',
-          ),
-        ),
+            Text(infoText),
+            // メールアドレス入力
+            TextFormField(
+              decoration: InputDecoration(labelText: 'メールアドレス'),
+              onChanged: (String value) {
+                setState(() {
+                  email = value;
+                });
+              },
+            ),
+            // パスワード入力
+            TextFormField(
+              decoration: InputDecoration(labelText: 'パスワード'),
+              obscureText: true,
+              onChanged: (String value) {
+                setState(() {
+                  password = value;
+                });
+              },
+            ),
         FlatButton(
-          onPressed: _incrementCounter,
+          onPressed: _roginExec,
           color: Colors.blue,
           child: Text(
             'ログイン',

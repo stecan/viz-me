@@ -1,16 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class Regist extends StatefulWidget {
-  Regist({Key? key, required this.title}) : super(key: key);
+import 'login_page.dart';
+
+class Dummy extends StatefulWidget {
+  Dummy({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _RegistState createState() => _RegistState();
+  _DummyState createState() => _DummyState();
 }
 
-class _RegistState extends State<Regist> {
+class _DummyState extends State<Dummy> {
   int _counter = 100;
 
   void _incrementCounter() {
@@ -29,13 +31,18 @@ class _RegistState extends State<Regist> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            TextField(
-              obscureText:false,
-              decoration: const InputDecoration(
-                hintText: 'Type your email address',
-                labelText: 'email address',
-              ),
+            Text(
+                "ログインに成功しました。"
             ),
+            Text("認証状態："),
+            TextButton(
+                child: Text("ログイン画面に戻る"),
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => Login(title: "rogin")
+                  ));
+                }
+            )
           ],
         ),
       ),

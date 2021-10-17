@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:viz_me/pages/regist_page.dart';
@@ -39,14 +40,14 @@ class _LoginState extends State<Login> {
       // トップ画面に遷移＋ログイン画面を破棄
       final _isVerified = await _auth.currentUser!.emailVerified;
       if (_isVerified) {
-        await _auth.currentUser!.sendEmailVerification();
-
         await Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) {
             return Dummy(title: '',);
           }),
         );
       } else{
+        await _auth.currentUser!.sendEmailVerification();
+
         await Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) {
             return SendVerifyMail(title: '未認証',from: 1,);

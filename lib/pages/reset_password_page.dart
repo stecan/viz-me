@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -11,12 +12,24 @@ class ResetPassword extends StatefulWidget {
 }
 
 class _ResetPasswordState extends State<ResetPassword> {
-  int _counter = 100;
+  // メッセージ表示用
+  String infoText = '';
+  // 入力メールアドレス
+  String email = '';
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  void _sendPasswordResetEmail() async{
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      setState(() {
+        infoText = 'パスワード再設定用のメールを送信しました。';
+      });
+    } catch (e) {
+      setState(() {
+        infoText = "パスワード再設定用のメールを送信に失敗しました：${e.toString()}";
+      });
+    }
   }
 
   @override
@@ -29,15 +42,21 @@ class _ResetPasswordState extends State<ResetPassword> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Text(infoText),
             TextField(
               obscureText:false,
               decoration: const InputDecoration(
                 hintText: 'Type your email address',
                 labelText: 'email address',
               ),
+              onChanged: (String value) {
+                setState(() {
+                  email = value;
+                });
+              }
             ),
             FlatButton(
-              onPressed: _incrementCounter,
+              onPressed: _sendPasswordResetEmail,
               color: Colors.blue,
               child: Text(
                 'リセットメールを送信',

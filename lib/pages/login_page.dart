@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:viz_me/pages/regist_page.dart';
@@ -21,13 +22,15 @@ class _LoginState extends State<Login> {
 
   // メッセージ表示用
   String infoText = '';
+
   // 入力メールアドレス
   String email = '';
+
   // 入力パスワード
   String password = '';
 
   // メール/パスワードでログイン試行
-  void _roginExec() async{
+  void _loginExec() async {
     try {
       final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -39,17 +42,21 @@ class _LoginState extends State<Login> {
       // トップ画面に遷移＋ログイン画面を破棄
       final _isVerified = await _auth.currentUser!.emailVerified;
       if (_isVerified) {
+        await Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) {
+            return Dummy(
+              title: '',
+            );
+          }),
+        );
+      } else {
         await _auth.currentUser!.sendEmailVerification();
 
         await Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) {
-            return Dummy(title: '',);
-          }),
-        );
-      } else{
-        await Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) {
-            return SendVerifyMail(title: '未認証',from: 1,);
+            return SendVerifyMail(
+              title: '未認証'
+            );
           }),
         );
       }
@@ -59,65 +66,67 @@ class _LoginState extends State<Login> {
         infoText = "ログインに失敗しました：${e.toString()}";
       });
     }
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(infoText),
-            // メールアドレス入力
-            TextFormField(
-              decoration: InputDecoration(labelText: 'メールアドレス'),
-              onChanged: (String value) {
-                setState(() {
-                  email = value;
-                });
-              },
+        appBar: AppBar(
+          title: Text(widget.title),
+        ),
+        body: Center(
+          child: Container(
+            padding: EdgeInsets.all(24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(infoText),
+                // メールアドレス入力
+                TextFormField(
+                  decoration: InputDecoration(labelText: 'メールアドレス'),
+                  onChanged: (String value) {
+                    setState(() {
+                      email = value;
+                    });
+                  },
+                ),
+                // パスワード入力
+                TextFormField(
+                  decoration: InputDecoration(labelText: 'パスワード'),
+                  obscureText: true,
+                  onChanged: (String value) {
+                    setState(() {
+                      password = value;
+                    });
+                  },
+                ),
+                FlatButton(
+                  onPressed: _loginExec,
+                  color: Colors.blue,
+                  child: Text(
+                    'ログイン',
+                  ),
+                ),
+                TextButton(
+                    child: Text("アカウント登録"),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Regist(title: "登録画面")));
+                    }),
+                TextButton(
+                    child: Text("パスワードを忘れた場合"),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  ResetPassword(title: "パスワードリセット")));
+                    }),
+              ],
             ),
-            // パスワード入力
-            TextFormField(
-              decoration: InputDecoration(labelText: 'パスワード'),
-              obscureText: true,
-              onChanged: (String value) {
-                setState(() {
-                  password = value;
-                });
-              },
-            ),
-        FlatButton(
-          onPressed: _roginExec,
-          color: Colors.blue,
-          child: Text(
-            'ログイン',
           ),
-        ),
-        TextButton(
-          child: Text("アカウント登録"),
-          onPressed: () {
-            Navigator.push(context, MaterialPageRoute(
-                builder: (context) => Regist(title: "登録画面")
-            ));
-          }
-        ),
-        TextButton(
-            child: Text("パスワードを忘れた場合"),
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => ResetPassword(title: "パスワードリセット")
-              ));
-            }
-        ),
-      ],
-    ),
-    ),
-    );
+        ));
   }
 }

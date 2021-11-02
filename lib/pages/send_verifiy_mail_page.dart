@@ -4,13 +4,10 @@ import 'package:flutter/material.dart';
 import 'login_page.dart';
 
 class SendVerifyMail extends StatefulWidget {
-  SendVerifyMail({Key? key, required this.title, required this.from})
+  SendVerifyMail({Key? key, required this.title})
       : super(key: key);
 
   final String title;
-
-  // １：ログイン画面　２：アカウント作成画面
-  final int from;
 
   @override
   _SendVerifyMailState createState() => _SendVerifyMailState();

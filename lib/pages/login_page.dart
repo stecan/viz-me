@@ -55,8 +55,7 @@ class _LoginState extends State<Login> {
         await Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) {
             return SendVerifyMail(
-              title: '未認証',
-              from: 1,
+              title: '未認証'
             );
           }),
         );

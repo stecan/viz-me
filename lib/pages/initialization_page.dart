@@ -15,10 +15,10 @@ class Initialization extends StatefulWidget {
 
 class _InitializationState extends State<Initialization> {
   // メッセージ表示用
-  String infoText = '';
+  String _infoText = '';
 
   // 入力ユーザー名
-  String userName = '';
+  String _userName = '';
   final _formKey = GlobalKey<FormState>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -34,43 +34,40 @@ class _InitializationState extends State<Initialization> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text(infoText),
                 Text("ユーザー名の設定"),
+                Text("${this._infoText}"),
                 Form(
-                  key:_formKey,
+                    key: _formKey,
                     child: Column(
-                  children: [
-                    TextFormField(
-                      obscureText: false,
-                      decoration: const InputDecoration(
-                        hintText: 'Type your nickname',
-                        labelText: 'ユーザー名',
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'ユーザー名を入力してください。';
-                        }
-                        if (value.length <= 4) {
-                          return 'ユーザー名が短すぎます';
-                        }
-                        return null;
-                      },
-                      onChanged: (String value) {
-                        setState(() {
-                          userName = value;
-                        });
-                      },
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          _submitButtonClick();
-                        }
-                      },
-                      child: Text('登録'),
-                    ),
-                  ],
-                )),
+                      children: [
+                        TextFormField(
+                          obscureText: false,
+                          decoration: const InputDecoration(
+                            hintText: 'Type your nickname',
+                            labelText: 'ユーザー名',
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'ユーザー名を入力してください。';
+                            }
+                            return null;
+                          },
+                          onChanged: (String value) {
+                            setState(() {
+                              _userName = value;
+                            });
+                          },
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              _submitButtonClick();
+                            }
+                          },
+                          child: Text('設定'),
+                        ),
+                      ],
+                    )),
               ],
             ),
           ),
@@ -79,7 +76,14 @@ class _InitializationState extends State<Initialization> {
 
   void _submitButtonClick() async {
     try {
-      await _auth.currentUser!.updateDisplayName(userName);
-    } catch (e) {}
+      await _auth.currentUser!.updateDisplayName(_userName);
+      setState(() {
+        _infoText = "ユーザー名の登録が成功しました";
+      });
+    } catch (e) {
+      setState(() {
+        _infoText = "ユーザー名の登録に失敗しました：${e.toString()}";
+      });
+    }
   }
 }
